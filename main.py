@@ -8,7 +8,12 @@ class WindowClass(QMainWindow, form_class) :
     def __init__(self) :
         super().__init__()
         self.setupUi(self)
+        
+        # 코인 종류 ComboBox가 변경 되었을 때
+        self.SelectCoincomboBox.currentIndexChanged.connect(self.getComboBoxItem)
 
+    def getComboBoxItem(self) :
+        print(self.SelectCoincomboBox.currentText())
 
 if __name__ == "__main__" :
     #QApplication : 프로그램을 실행시켜주는 클래스
