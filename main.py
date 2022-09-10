@@ -36,12 +36,12 @@ class WindowClass(QMainWindow, form_class) :
         #database.save_data(coinid)
 
         # coinid에 해당하는 data 가져오기
-        dataset_from_DB = self.dataDB.set_index(keys='DateTime')
-        dataset_from_DB.index.name=None
-
-        df = pd.DataFrame()
-        df = dataset_from_DB[dataset_from_DB['coinID'] == coinid]
+        df = pd.DataFrame(self.dataDB)
+        df = df[df['coinID'] == coinid]
         df.drop(labels='coinID', axis=1)
+        df = df.set_index(keys='DateTime')
+        df.index.name=None
+
         print(df.shape)
 
         self.fig.clear()
