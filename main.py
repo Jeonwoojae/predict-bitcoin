@@ -51,11 +51,14 @@ class WindowClass(QMainWindow, form_class) :
         print(df.shape)
 
         # 예측 시작
-        res = trained_model.do_predict(df)
-        
+        res = trained_model.do_predict(df).flatten().tolist()
+        #print(res.shape)
+        date = np.arange(0,len(res),)
 
         # 예측 결과 출력
-        
+        self.priceChart.setBackground('w')
+        self.priceChart.setTitle('Predict result')
+        self.priceChart.plot(date,res,pen=(0,0,255))
 
     def getComboBoxItem(self) :
         coinid = self.SelectCoincomboBox.currentText()
