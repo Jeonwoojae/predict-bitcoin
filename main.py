@@ -1,13 +1,18 @@
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
+import pyqtgraph as pg
 
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import mplfinance as mpf
 import pandas as pd
+import time
+import numpy as np
 
 import database
+import trained_model
 
 form_class = uic.loadUiType("test.ui")[0]
 
@@ -17,23 +22,44 @@ class WindowClass(QMainWindow, form_class) :
     def __init__(self) :
         super().__init__()
         self.setupUi(self)
-        self.initUI()
         self.dataDB = database.bring_coin_data()
         
         # 코인 종류 ComboBox가 변경 되었을 때
         self.SelectCoincomboBox.currentIndexChanged.connect(self.getComboBoxItem)
 
-    def initUI(self):
-        self.fig = plt.Figure()
-        self.canvas = FigureCanvas(self.fig)
+        # predict 버튼을 눌렀을 때
+        self.button_Predict.clicked.connect(self.predict_coin)
 
-        layout = QVBoxLayout()
-        layout.addWidget(self.canvas)
 
+    def predict_coin(self):
+        print('predict')
+
+        # 예측할 coin 가져오기
+        text = self.SelectCoincomboBox.currentText()
+        df = pd.DataFrame(self.dataDB)
+        df = df[df['coinID'] == text]
+        df.drop(labels='coinID', axis=1)
+
+        # 예측할 날짜 가져오기
+        select_date = self.dateTimeEdit.dateTime().toString("yyyy-MM-dd hh:mm:ss")
+        print('선택한 날짜 : ' + select_date)
+        df = df[df['DateTime'] > select_date]
+        
+        df = df.set_index(keys='DateTime')
+        DateTime = df.index
+        df.index.name=None
+        print(df.shape)
+
+        # 예측 시작
+        res = trained_model.do_predict(df)
+        
+
+        # 예측 결과 출력
+        
 
     def getComboBoxItem(self) :
         coinid = self.SelectCoincomboBox.currentText()
-        #database.save_data(coinid)
+        #database.save_data(coinid) # 데이터 업데이트 필요
 
         # coinid에 해당하는 data 가져오기
         df = pd.DataFrame(self.dataDB)
