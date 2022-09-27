@@ -24,12 +24,28 @@ class WindowClass(QMainWindow, form_class) :
         self.setupUi(self)
         self.dataDB = database.bring_coin_data()
         
-        # 코인 종류 ComboBox가 변경 되었을 때
-        self.SelectCoincomboBox.currentIndexChanged.connect(self.getComboBoxItem)
 
         # predict 버튼을 눌렀을 때
         self.button_Predict.clicked.connect(self.predict_coin)
 
+        # 현재가 버튼을 눌렀을 때
+        self.button_Chart.clicked.connect(self.displayChart)
+
+
+        # groupBox의 버튼을 선택했을 때
+        self.UnitofTime_Button_d.clicked.connect(self.timeButtonClicked)
+        self.UnitofTime_Button_h.clicked.connect(self.timeButtonClicked)
+        self.UnitofTime_Button_m.clicked.connect(self.timeButtonClicked)
+
+    def timeButtonClicked(self):
+        msg=""
+        if self.UnitofTime_Button_d.isChecked():
+            msg = "1d"
+        elif self.UnitofTime_Button_h.isChecked():
+            msg = "1h"
+        else:
+            msg = "30m"
+        print(msg)
 
     def predict_coin(self):
         print('predict')
@@ -60,7 +76,7 @@ class WindowClass(QMainWindow, form_class) :
         self.priceChart.setTitle('Predict result')
         self.priceChart.plot(date,res,pen=(0,0,255))
 
-    def getComboBoxItem(self) :
+    def displayChart(self) :
         coinid = self.SelectCoincomboBox.currentText()
         #database.save_data(coinid) # 데이터 업데이트 필요
 
@@ -73,8 +89,6 @@ class WindowClass(QMainWindow, form_class) :
 
         print(df.shape)
 
-        self.fig.clear()
-
         mc = mpf.make_marketcolors(up='r', down='b',
                                     edge='white',
                                     wick={'up':'red', 'down':'blue'},
@@ -83,7 +97,6 @@ class WindowClass(QMainWindow, form_class) :
         s = mpf.make_mpf_style(marketcolors=mc)
         fig = mpf.plot(df, type='line', style = s, mav=(5,20), volume=True)
         #fig.legend()
-        self.canvas.draw()
 
 
 if __name__ == "__main__" :
