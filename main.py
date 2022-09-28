@@ -32,21 +32,6 @@ class WindowClass(QMainWindow, form_class) :
         self.button_Chart.clicked.connect(self.displayChart)
 
 
-        # groupBox의 버튼을 선택했을 때
-        self.UnitofTime_Button_d.clicked.connect(self.timeButtonClicked)
-        self.UnitofTime_Button_h.clicked.connect(self.timeButtonClicked)
-        self.UnitofTime_Button_m.clicked.connect(self.timeButtonClicked)
-
-    def timeButtonClicked(self):
-        msg=""
-        if self.UnitofTime_Button_d.isChecked():
-            msg = "1d"
-        elif self.UnitofTime_Button_h.isChecked():
-            msg = "1h"
-        else:
-            msg = "30m"
-        print(msg)
-
     def predict_coin(self):
         print('predict')
 
@@ -64,6 +49,15 @@ class WindowClass(QMainWindow, form_class) :
         df = df.set_index(keys='DateTime')
         DateTime = df.index
         df.index.name=None
+
+        # 시간 단위 나누기
+        if self.UnitofTime_Button_d.isChecked():
+            df = df.resample(rule='1D').first()
+        elif self.UnitofTime_Button_h.isChecked():
+            df = df.resample(rule='1H').first()
+        elif self.UnitofTime_Button_m.isChecked():
+            df = df.resample(rule='30T').first()
+        
         print(df.shape)
 
         # 예측 시작
@@ -86,6 +80,15 @@ class WindowClass(QMainWindow, form_class) :
         df.drop(labels='coinID', axis=1)
         df = df.set_index(keys='DateTime')
         df.index.name=None
+
+        # 시간 단위 나누기
+        # 거래량 합치기, 종가, 시가 작업 필요할
+        if self.UnitofTime_Button_d.isChecked():
+            df = df.resample(rule='1D').first()
+        elif self.UnitofTime_Button_h.isChecked():
+            df = df.resample(rule='1H').first()
+        elif self.UnitofTime_Button_m.isChecked():
+            df = df.resample(rule='30T').first()
 
         print(df.shape)
 
