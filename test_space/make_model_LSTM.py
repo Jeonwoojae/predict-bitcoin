@@ -100,13 +100,16 @@ from sklearn.preprocessing import MinMaxScaler
 
 scaler = MinMaxScaler()
 # 스케일을 적용할 column을 정의합니다.
-scale_cols = ['close']
+scale_cols = ['open', 'high', 'low', 'close', 'value']
 # 스케일 후 columns
 scaled = scaler.fit_transform(dataset[scale_cols])
 # scaled
 
 ## 새로운 데이터셋
 scaled_df = pd.DataFrame(scaled, columns=scale_cols)
+
+# inverse 하기 위한 scaler를 저장
+scaled_for_inversed = scaler.fit_transform(dataset[['close']])
 
 
 

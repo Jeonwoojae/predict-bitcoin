@@ -16,8 +16,6 @@ import trained_model
 
 form_class = uic.loadUiType("test.ui")[0]
 
-
-
 class WindowClass(QMainWindow, form_class) :
     def __init__(self) :
         super().__init__()
