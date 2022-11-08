@@ -1,4 +1,5 @@
 import sys
+import os
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 import pyqtgraph as pg
@@ -14,9 +15,9 @@ import numpy as np
 import database
 import trained_model
 
-form_class = uic.loadUiType("test.ui")[0]
+FORM_CLASS, _= uic.loadUiType(os.path.join(os.path.dirname(__file__),"test.ui"))
 
-class WindowClass(QMainWindow, form_class) :
+class WindowClass(QMainWindow, FORM_CLASS) :
     def __init__(self) :
         super().__init__()
         self.setupUi(self)
